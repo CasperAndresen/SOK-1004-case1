@@ -85,7 +85,7 @@ La oss rydde i data. Det er tre ting å ta tak i:
 Skriv kode som lagrer dataene som én tibble med anstendige variabelnavn og årstall som heltall. Fremover bruker jeg "var", "tid", og "verdi" for "statistikkvariabel", "Tid", og "value".
 
 ```{r}
-
+# Oppgave Ia løses her 
 df <- df[2] $dataset
 df$Tid <- as.integer(df$Tid)
 df$value <- as.numeric(df$value)
@@ -93,8 +93,6 @@ df <- tibble(df)
 df <- rename(df, var = ContentsCode)
 df <- rename(df, tid = Tid)
 df <- rename(df, verdi = value)
-
-# Oppgave Ia løses her 
 
 ```
 
@@ -113,6 +111,13 @@ Lag en pen figur som viser BNP i tusener av kroner per person, i både løpende 
 
 ```{r}
 # Oppgave Ib løses her 
+df %>%
+  filter(var == "BNP") %>%
+  filter(tid %in% c(2000:2021)) %>%
+  ggplot(aes(x=tid,y=verdi)) +
+  scale_y_continuous(labels=scales::comma) +
+  geom_line()
+  
 ```
 
 *\[Besvar oppgave 1b her\]*
