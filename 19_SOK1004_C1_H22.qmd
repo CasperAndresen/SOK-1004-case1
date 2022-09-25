@@ -120,7 +120,9 @@ df %>%
   
 ```
 
-*\[Besvar oppgave 1b her\]*
+[**Svar på spørsmålet**]{.underline}
+
+*Grafen viser utviklingen av BNP over en periode på 21 år. I løpet av denne tidsperioden ser vi en klar økning. BNP i løpende priser er de faktiske prisene uten hensyn til inflasjon og endret pengeverdi. Faste priser tar hensyn til disse og gir et mye klarere bilde på landets reelle verdiskapning. Derfor er også faste priser også faste priser mest relevante når du ønsker å se landets reelle verdiøkning.*
 
 ## II. Transformasjon, visualisering
 
@@ -147,6 +149,10 @@ Beskriv konkret hva koden gjorde. Sammenlign `df` og `df_wide`.
 
 Til å beregne endring er funksjonen `lag()` meget nyttig. I denne konteksten er begrepet *lag* et engelsk verb som beskriver foregående observasjon. Bruker vi funksjoenen `lag()` på en variabel (kolonne) så returnerer den en ny kolonne hvor verdien er lik foregående observasjon. Betrakt følgende kode:
 
+df_wide \<- df_wide %\>%
+
+relocate("LBNP", .before = "MEMOBNP")
+
 ```{r}
 df_wide <- df_wide %>%
   mutate(LBNP = lag(BNP,n=1L)) %>%
@@ -165,7 +171,14 @@ Hvis vi bruker den matematiske notasjonen diskutert tidligere så har vi nå kol
 Bruk funksjonen `mutate()` til å lage en ny variabel med relativ endring i `BNP` og `MEMOBNP` i `df_wide` og lagre de som `DBNP` og `DMEMOBNP`.
 
 ```{r}
-# Besvar oppgave IIb her 
+# Besvar oppgave IIb her
+df_wide <- df_wide %>%
+  mutate(DBNP = BNP-LBNP) %>%
+  mutate(DMEMOBNP = MEMOBNP-LMEMOBNP)
+
+#flytter den til riktig plass
+df_wide <- df_wide %>%
+  relocate("DBNP", .before = "MEMOBNP")
 ```
 
 ## Oppgave IIc: Omorganisere datasett med `pivot_longer()`
@@ -176,6 +189,10 @@ Bruk nå funksjonen `pivot_longer()` til å transformere `df_wide` til det oppri
 
 ```{r}
 # Besvar oppgave IIc 
+df_long <- df_wide %>%
+  pivot_longer(cols = everything(), names_to = "var", values_to = "verdi") %>%
+  arrange(var)
+
 ```
 
 ## Oppgave IId: Figur med vekst
@@ -186,4 +203,16 @@ Lag en pen figur med prosentvis vekst i nominelt og reelt BNP per person fra 197
 
 ```{r}
 # Besvar oppgave IId her
+
+df_wide %>%
+mutate(prosBNP = 100*(BNP - lag(BNP))/lag(BNP)) %>%
+filter(tid >=1971) %>%
+ggplot(aes(x=tid, y=prosBNP)) +
+geom_line() +
+geom_point() +
+geom_smooth()
+
+
 ```
+
+*Vi finner 4 obserbvasjoner med negativ vekst i BNP.Grunner til disse er som ofte knyttet til store globale kriser. Som eksempel, regresjonen i 2008 skyldes den globale finanskrisen og den i 2020 grunnet koronapandemien.*
