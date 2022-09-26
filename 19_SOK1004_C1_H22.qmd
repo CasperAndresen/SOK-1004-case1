@@ -138,12 +138,14 @@ Vi skal lage to variable `dBNP` og `dMEMOBNP` som viser relativ endring i `BNP` 
 
 ```{r}
 df_wide <- df %>%
-  pivot_wider(names_from = var, values_from = verdi) 
+  pivot_wider(names_from = var, values_from = verdi)
 ```
 
 Beskriv konkret hva koden gjorde. Sammenlign `df` og `df_wide`.
 
-*\[Besvar oppgave IIa her\]*
+[**Svar på spørsmålet**]{.underline}
+
+*pivot_wider() legger til flere kolonner og dermed minsker antallet rader. I dette tilfellet lagde den egne kolonner for både BNP og MEMOBNP.*
 
 ## Oppgave IIb: Beregn vekst
 
@@ -192,7 +194,16 @@ Bruk nå funksjonen `pivot_longer()` til å transformere `df_wide` til det oppri
 df_long <- df_wide %>%
   pivot_longer(cols = everything(), names_to = "var", values_to = "verdi") %>%
   arrange(var)
+df_long
+```
 
+```{r}
+#Alternativ besvarelse på oppgave IIc
+
+df_long <- df_wide %>%
+  pivot_longer(!tid, names_to = "var", values_to = "verdi") %>%
+  arrange(var)
+df_long
 ```
 
 ## Oppgave IId: Figur med vekst
@@ -214,5 +225,7 @@ geom_smooth()
 
 
 ```
+
+[**Svar på spørsmålet**]{.underline}
 
 *Vi finner 4 obserbvasjoner med negativ vekst i BNP.Grunner til disse er som ofte knyttet til store globale kriser. Som eksempel, regresjonen i 2008 skyldes den globale finanskrisen og den i 2020 grunnet koronapandemien.*
